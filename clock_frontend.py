@@ -70,14 +70,23 @@ def Main():
     Title2 = Label(Middle, text="Całkowity czas spędzony na programowaniu", font=("arial", 18), fg="white", bg="black")
     Title2.pack(side=TOP)
 
-    with open('programming_time.txt', 'r') as file:
-        reader = csv.reader(file)
-        print(reader)
-        for row in reader:
+    #  ten try i excep ma tworzyc nowy plik albo zamieniać liczby z .txt na dane do wyświetlania
+    try:
+        with open('programming_time.txt', 'r') as file:
+            reader = csv.reader(file)
+            # print(reader)
+            for row in reader:
+                print(row)
             print(row)
-        print(row)
-        minutes_of_coding = float(row[0])//60
-        hours_of_coding = minutes_of_coding//60
+            minutes_of_coding = float(row[0])//60
+            hours_of_coding = minutes_of_coding//60
+            
+    except FileNotFoundError:
+        f = open('programming_time.txt', "w+")
+        f.write(str(0))
+        f.close()
+        minutes_of_coding = 0
+        hours_of_coding = 0
 
     all_programming_time = Label(Middle, text="godziny: " + str(hours_of_coding) + " minuty: " + str(minutes_of_coding),
                                  font=("arial", 18), fg="white", bg="black")
@@ -130,7 +139,7 @@ class StopWatch(Frame):
             self.onRunning = 1
 
     def Save(self):
-
+        #  poniższa linijka odwala jakąś magie 
         self.nextTime = time.time() - self.startTime
         self.SetTime(self.nextTime)
 
