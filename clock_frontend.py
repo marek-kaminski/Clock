@@ -24,10 +24,6 @@ def Main():
     # label = Label(root, image=photo, width=900, height=450, bg="black")
     # label.pack()
 
-
-
-
-
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
     x = (screen_width / 2) - (width / 2)
@@ -74,13 +70,14 @@ def Main():
     try:
         with open('programming_time.txt', 'r') as file:
             reader = csv.reader(file)
-            # print(reader)
             for row in reader:
                 print(row)
             print(row)
-            minutes_of_coding = float(row[0])//60
+            # the row below takes the time from file, then converts it into float to make the
+            # calculations and then to int to remove the unnecessary "0"
+            minutes_of_coding = int(float(row[0])//60)
             hours_of_coding = minutes_of_coding//60
-            
+
     except FileNotFoundError:
         f = open('programming_time.txt', "w+")
         f.write(str(0))
@@ -139,16 +136,27 @@ class StopWatch(Frame):
             self.onRunning = 1
 
     def Save(self):
-        #  poniższa linijka odwala jakąś magie 
-        self.nextTime = time.time() - self.startTime
-        self.SetTime(self.nextTime)
+        # problem jest następujący, zapisywanie dodaje za każdym razem kiedy naklikam save ale resetuje się po
+        #  minucie, nie wiem czemu
+        # trzeba by było albo ustawićczas na zero przy save
+        # albo dodać nową funkcję która była by zmieniana zamiast czasu obecnego
+
+
+        #  poniższa linijka zmiania czas obecny na podstawie czasu od początku czasu
+
+        # self.nextTime = time.time() - self.startTime
+        # self.SetTime(self.nextTime)
+        # jakies eksperymenty zeby zrobic nowy parametr ktory bedzie odejmowany zamiast self.nextTime
+        # time_temporary = self.nextTime
+        # print(11111, time_temporary)
+        # time_temporary2 = time_temporary - 0
 
         with open('programming_time.txt', 'r+') as file:
             reader = csv.reader(file)
-            for row in reader:
-                all_time = self.nextTime + float(row[0])
-                print(row)
-                print(all_time)
+            for row2 in reader:
+                all_time = self.nextTime + float(row2[0])
+                print(33333333, row2)
+                print(2222222222, all_time)
                 f = open('programming_time.txt', "w+")
                 f.write(str(all_time))
                 f.close()
@@ -174,9 +182,6 @@ class StopWatch(Frame):
             self.after_cancel(self.timer)
             self.onRunning = 0
 
-
-
-
     def Reset(self):
         self.startTime = time.time()
         self.nextTime = 0.0
@@ -185,3 +190,4 @@ class StopWatch(Frame):
 
 if __name__ == '__main__':
     Main()
+
