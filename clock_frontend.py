@@ -1,4 +1,3 @@
-
 from tkinter import *
 import time
 import csv
@@ -30,54 +29,52 @@ def Main():
     y = (screen_height / 2) - (height / 2)
     root.geometry("%dx%d+%d+%d" % (width, height, x, y))
 
-    Top = Frame(root, width=600, bg="black")
-    Top.pack(side=TOP)
-    stopWatch = StopWatch(root)
-    stopWatch.pack(side=TOP)
+    top = Frame(root, width=600, bg="black")
+    top.pack(side=TOP)
+    stop_watch = StopWatch(root)
+    stop_watch.pack(side=TOP)
 
-    Middle = Frame(root, width=600, bg="black")
-    Middle.pack(side=TOP)
+    middle = Frame(root, width=600, bg="black")
+    middle.pack(side=TOP)
 
-    Bottom = Frame(root, width=500, bg="black")
-    Bottom.pack(side=BOTTOM)
+    bottom = Frame(root, width=500, bg="black")
+    bottom.pack(side=BOTTOM)
 
-    blank_line3 = Label(Bottom, text="", font=("arial", 18), fg="white", bg="black")
+    blank_line3 = Label(bottom, text="", font=("arial", 18), fg="white", bg="black")
     blank_line3.pack(side=BOTTOM)
-    blank_line4 = Label(Bottom, text="", font=("arial", 18), fg="white", bg="black")
+    blank_line4 = Label(bottom, text="", font=("arial", 18), fg="white", bg="black")
     blank_line4.pack(side=TOP)
 
-    Start = Button(Bottom, text='Start', command=stopWatch.Start, width=10, height=2)
-    Start.pack(side=LEFT)
-    Stop = Button(Bottom, text='Stop', command=stopWatch.Stop, width=10, height=2)
-    Stop.pack(side=LEFT)
-    Save = Button(Bottom, text='Save', command=stopWatch.Save, width=10, height=2)
-    Save.pack(side=LEFT)
-    Reset = Button(Bottom, text='Reset', command=stopWatch.Reset, width=10, height=2)
-    Reset.pack(side=LEFT)
+    start = Button(bottom, text='Start', command=stop_watch.start, width=10, height=2)
+    start.pack(side=LEFT)
+    stop = Button(bottom, text='Stop', command=stop_watch.stop, width=10, height=2)
+    stop.pack(side=LEFT)
+    save = Button(bottom, text='Save/Reset', command=stop_watch.save_reset, width=10, height=2)
+    save.pack(side=LEFT)
+    # Reset = Button(Bottom, text='Reset', command=stopWatch.Reset, width=10, height=2)
+    # Reset.pack(side=LEFT)
 
-    blank_line = Label(Top, text=" ", font=("arial", 18), fg="white", bg="black")
+    blank_line = Label(top, text=" ", font=("arial", 18), fg="white", bg="black")
     blank_line.pack(fill=X)
 
-    Title = Label(Top, text="stoper", font=("arial", 18), fg="white", bg="black")
-    Title.pack(fill=X)
-    blank_line2 = Label(Middle, text="", font=("arial", 18), fg="white", bg="black")
+    title = Label(top, text="stoper", font=("arial", 18), fg="white", bg="black")
+    title.pack(fill=X)
+    blank_line2 = Label(middle, text="", font=("arial", 18), fg="white", bg="black")
     blank_line2.pack(side=TOP)
 
-    Title2 = Label(Middle, text="Całkowity czas spędzony na programowaniu", font=("arial", 18), fg="white", bg="black")
-    Title2.pack(side=TOP)
-
-    #  ten try i excep ma tworzyc nowy plik albo zamieniać liczby z .txt na dane do wyświetlania
+    title2 = Label(middle, text="Całkowity czas spędzony na programowaniu", font=("arial", 18), fg="white", bg="black")
+    title2.pack(side=TOP)
+    # this try/except will read the .txt file or create a new one
     try:
         with open('programming_time.txt', 'r') as file:
             reader = csv.reader(file)
+            # the line below will make an object called 'row' from the time in .txt file
             for row in reader:
-                print(row)
-            print(row)
+                pass
             # the row below takes the time from file, then converts it into float to make the
             # calculations and then to int to remove the unnecessary "0"
             minutes_of_coding = int(float(row[0])//60)
             hours_of_coding = minutes_of_coding//60
-
     except FileNotFoundError:
         f = open('programming_time.txt', "w+")
         f.write(str(0))
@@ -85,12 +82,14 @@ def Main():
         minutes_of_coding = 0
         hours_of_coding = 0
 
-    all_programming_time = Label(Middle, text="godziny: " + str(hours_of_coding) + " minuty: " + str(minutes_of_coding),
+    all_programming_time = Label(middle, text="godziny: " + str(hours_of_coding) + " minuty: " + str(minutes_of_coding),
                                  font=("arial", 18), fg="white", bg="black")
     all_programming_time.pack(side=TOP)
 
     root.config(bg="black")
     root.mainloop()
+    # update the line
+    # all_programming_time["text"] = "godziny: " + str(hours_of_coding) + " minuty: " + str(minutes_of_coding)
 
 
 class StopWatch(Frame):
@@ -118,10 +117,10 @@ class StopWatch(Frame):
         self.SetTime(self.nextTime)
         timeText.pack(fill=X, expand=NO, pady=2, padx=2)
 
-    def Updater(self):
+    def updater(self):
         self.nextTime = time.time() - self.startTime
         self.SetTime(self.nextTime)
-        self.timer = self.after(50, self.Updater)
+        self.timer = self.after(50, self.updater)
 
     def SetTime(self, nextElap):
         minutes = int(nextElap / 60)
@@ -129,55 +128,45 @@ class StopWatch(Frame):
         miliSeconds = int((nextElap - minutes * 60.0 - seconds) * 100)
         self.timestr.set('%02d:%02d:%02d' % (minutes, seconds, miliSeconds))
 
-    def Start(self):
+    def start(self):
         if not self.onRunning:
             self.startTime = time.time() - self.nextTime
-            self.Updater()
+            self.updater()
             self.onRunning = 1
 
-    def Save(self):
-        # problem jest następujący, zapisywanie dodaje za każdym razem kiedy naklikam save ale resetuje się po
-        #  minucie, nie wiem czemu
-        # trzeba by było albo ustawićczas na zero przy save
-        # albo dodać nową funkcję która była by zmieniana zamiast czasu obecnego
-
-
-        #  poniższa linijka zmiania czas obecny na podstawie czasu od początku czasu
-
-        # self.nextTime = time.time() - self.startTime
-        # self.SetTime(self.nextTime)
-        # jakies eksperymenty zeby zrobic nowy parametr ktory bedzie odejmowany zamiast self.nextTime
-        # time_temporary = self.nextTime
-        # print(11111, time_temporary)
-        # time_temporary2 = time_temporary - 0
+    def save_reset(self):
 
         with open('programming_time.txt', 'r+') as file:
             reader = csv.reader(file)
-            for row2 in reader:
-                all_time = self.nextTime + float(row2[0])
-                print(33333333, row2)
+            for row in reader:
+                all_time = self.nextTime + float(row[0])
+                print(33333333, row)
                 print(2222222222, all_time)
                 f = open('programming_time.txt', "w+")
                 f.write(str(all_time))
                 f.close()
+        # this will reset the time
+        self.startTime = time.time()
+        self.nextTime = 0.0
+        self.SetTime(self.nextTime)
 
-        # try:
-        #     with open('programming_time.txt', "w+") as file:
-        #         reader = csv.reader(file)
-        #         print(reader)
-        #         for row in reader:
-        #             print(row)
-        #             all_time = self.nextTime + reader
-        #             f.write(str(self.nextTime))
-        #             f.close()
+        f = open('programming_time.txt', "w+")
+        f.write(str(all_time))
+        f.close()
+
         #
         #
-        # except FileExistsError:
-        #     f = open('programming_time.txt', "r+")
-        #     f.write(str(self.nextTime))
-        #     f.close()
+        # with open('programming_time.txt', 'r') as file:
+        #     reader = csv.reader(file)
+        #     # the line below will make an object called 'row' from the time in .txt file
+        #     for row in reader:
+        #         pass
+        #     # the row below takes the time from file, then converts it into float to make the
+        #     # calculations and then to int to remove the unnecessary "0"
+        #     minutes_of_coding = int(float(row[0])//60)
+        #     hours_of_coding = minutes_of_coding//60
 
-    def Stop(self):
+    def stop(self):
         if self.onRunning:
             self.after_cancel(self.timer)
             self.onRunning = 0
@@ -190,4 +179,3 @@ class StopWatch(Frame):
 
 if __name__ == '__main__':
     Main()
-
