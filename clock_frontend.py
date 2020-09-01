@@ -51,8 +51,6 @@ def Main():
     stop.pack(side=LEFT)
     save = Button(bottom, text='Save/Reset', command=stop_watch.save_reset, width=10, height=2)
     save.pack(side=LEFT)
-    # Reset = Button(Bottom, text='Reset', command=stopWatch.Reset, width=10, height=2)
-    # Reset.pack(side=LEFT)
 
     blank_line = Label(top, text=" ", font=("arial", 18), fg="white", bg="black")
     blank_line.pack(fill=X)
@@ -145,26 +143,12 @@ class StopWatch(Frame):
                 f = open('programming_time.txt', "w+")
                 f.write(str(all_time))
                 f.close()
-        # this will reset the time
-        self.startTime = time.time()
-        self.nextTime = 0.0
-        self.SetTime(self.nextTime)
-
-        f = open('programming_time.txt', "w+")
-        f.write(str(all_time))
-        f.close()
-
-        #
-        #
-        # with open('programming_time.txt', 'r') as file:
-        #     reader = csv.reader(file)
-        #     # the line below will make an object called 'row' from the time in .txt file
-        #     for row in reader:
-        #         pass
-        #     # the row below takes the time from file, then converts it into float to make the
-        #     # calculations and then to int to remove the unnecessary "0"
-        #     minutes_of_coding = int(float(row[0])//60)
-        #     hours_of_coding = minutes_of_coding//60
+                # this will reset the time
+                self.startTime = time.time()
+                self.nextTime = 0.0
+                self.SetTime(self.nextTime)
+                #  without the "break" the loop would go a second time after reaching 100 seconds and cause a bug
+                break
 
     def stop(self):
         if self.onRunning:
