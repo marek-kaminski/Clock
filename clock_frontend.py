@@ -1,27 +1,19 @@
 from tkinter import *
 import time
 import csv
+from PIL import ImageTk, Image
+# import ImageTk
+# import Image
 
+# import Image
 
-# from PIL import ImageTk, Image
-
-def Main():
+def main():
     global root
 
     root = Tk()
     root.title("Stopwatch")
     width = 500
     height = 400
-
-    # canvas = Canvas(root, width=300, height=160)
-    # image = ImageTk.PhotoImage(Image.open("sky_image.png"))
-    # canvas.create_image(0, 0, anchor=NW, image=image)
-    # canvas.pack()
-    # root.mainloop()
-
-    # photo = PhotoImage(file="sky_image.png", )
-    # label = Label(root, image=photo, width=900, height=450, bg="black")
-    # label.pack()
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -40,6 +32,14 @@ def Main():
     bottom = Frame(root, width=500, bg="black")
     bottom.pack(side=BOTTOM)
 
+    blank_line = Label(top, text=" ", font=("arial", 18), fg="white", bg="black")
+    blank_line.pack(fill=X)
+
+    title = Label(top, text="stoper", font=("arial", 18), fg="white", bg="black")
+    title.pack(fill=X)
+
+    blank_line2 = Label(middle, text="", font=("arial", 18), fg="white", bg="black")
+    blank_line2.pack(side=TOP)
     blank_line3 = Label(bottom, text="", font=("arial", 18), fg="white", bg="black")
     blank_line3.pack(side=BOTTOM)
     blank_line4 = Label(bottom, text="", font=("arial", 18), fg="white", bg="black")
@@ -52,16 +52,9 @@ def Main():
     save = Button(bottom, text='Save/Reset', command=stop_watch.save_reset, width=10, height=2)
     save.pack(side=LEFT)
 
-    blank_line = Label(top, text=" ", font=("arial", 18), fg="white", bg="black")
-    blank_line.pack(fill=X)
-
-    title = Label(top, text="stoper", font=("arial", 18), fg="white", bg="black")
-    title.pack(fill=X)
-    blank_line2 = Label(middle, text="", font=("arial", 18), fg="white", bg="black")
-    blank_line2.pack(side=TOP)
-
     title2 = Label(middle, text="Całkowity czas spędzony na programowaniu", font=("arial", 18), fg="white", bg="black")
     title2.pack(side=TOP)
+
     # this try/except will read the .txt file or create a new one
     try:
         with open('programming_time.txt', 'r') as file:
@@ -87,8 +80,6 @@ def Main():
     root.config(bg="black")
     root.mainloop()
     # update the line
-    # all_programming_time["text"] = "godziny: " + str(hours_of_coding) + " minuty: " + str(minutes_of_coding)
-
 
 class StopWatch(Frame):
 
@@ -113,17 +104,17 @@ class StopWatch(Frame):
     def MakeWidget(self):
         timeText = Label(self, textvariable=self.timestr, font=("arial", 50), fg="green", bg="black")
         self.SetTime(self.nextTime)
-        timeText.pack(fill=X, expand=NO, pady=2, padx=2)
+        timeText.pack(fill=X, expand=NO, pady=1, padx=1)
 
     def updater(self):
         self.nextTime = time.time() - self.startTime
         self.SetTime(self.nextTime)
         self.timer = self.after(50, self.updater)
 
-    def SetTime(self, nextElap):
-        minutes = int(nextElap / 60)
-        seconds = int(nextElap - minutes * 60.0)
-        miliSeconds = int((nextElap - minutes * 60.0 - seconds) * 100)
+    def SetTime(self, next_lap):
+        minutes = int(next_lap / 60)
+        seconds = int(next_lap - minutes * 60.0)
+        miliSeconds = int((next_lap - minutes * 60.0 - seconds) * 100)
         self.timestr.set('%02d:%02d:%02d' % (minutes, seconds, miliSeconds))
 
     def start(self):
@@ -138,8 +129,6 @@ class StopWatch(Frame):
             reader = csv.reader(file)
             for row in reader:
                 all_time = self.nextTime + float(row[0])
-                print(33333333, row)
-                print(2222222222, all_time)
                 f = open('programming_time.txt', "w+")
                 f.write(str(all_time))
                 f.close()
@@ -155,11 +144,6 @@ class StopWatch(Frame):
             self.after_cancel(self.timer)
             self.onRunning = 0
 
-    def Reset(self):
-        self.startTime = time.time()
-        self.nextTime = 0.0
-        self.SetTime(self.nextTime)
-
 
 if __name__ == '__main__':
-    Main()
+    main()
